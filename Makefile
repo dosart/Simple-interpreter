@@ -1,24 +1,26 @@
-install:
-	poetry install
+install: ## Install dependencies
+	@poetry install
 
-test:
-	poetry run pytest
+format: ## Install dependencies
+	poetry run black .
 
-test-coverage:
-	poetry run pytest --cov=hexlet_python_package --cov-report xml
+test: ## Run tests
+	@poetry run pytest
 
-lint:
-	poetry run flake8 hexlet_python_package
+lint: ## Run linter
+	@poetry run flake8 hexlet_python_package
 
-selfcheck:
-	poetry check
+selfcheck: ## Checks the validity of the pyproject.toml file
+	@poetry check
 
-check: selfcheck test lint
+check: ## selfcheck + test + lint
+	@make selfcheck
+	@make test
+	@make lint
+	poetry run black --check
 
-build: check
-	poetry build
+build: ## Check and builds a package
+	@make check
+	@poetry build
 
-format:
-	black .
-
-.PHONY: install test lint selfcheck check build format
+.PHONY: install format test lint selfcheck check build cc-coverage help
