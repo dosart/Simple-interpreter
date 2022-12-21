@@ -5,6 +5,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
   config.vm.provision "shell", path: "provision.sh", privileged: false
 
+  # Automatically cd to /vagrant folder when vagrant ssh
+  config.ssh.extra_args = ["-t", "cd /vagrant; bash --login"]
+
   config.vm.provider "virtualbox" do |vb|
     vb.name = "ubuntu-20_04_for_python"
    
@@ -25,4 +28,3 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--cpus", cpus]
   end
 end
-
