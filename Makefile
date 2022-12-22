@@ -8,7 +8,7 @@ test: ## Run tests
 	@poetry run pytest
 
 lint: ## Run linter
-	@poetry run flake8 hexlet_python_package
+	@poetry run flake8 interpreter
 
 selfcheck: ## Checks the validity of the pyproject.toml file
 	@poetry check

@@ -15,7 +15,7 @@ pytest-cov = "^4.0.0"
 commitizen = "^2.38.0"
 
 [tool.poetry.scripts]
-hexlet-python-package = "hexlet_python_package.scripts.hexlet_python_package:main"
+interpreter = "interpreter.scripts.interpreter:main"
 
 
 [tool.commitizen]
