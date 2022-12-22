@@ -34,7 +34,7 @@ class Either(object):
         Returns:
             value: an error message
         """
-        if not self.is_left():
+        if not self.is_left:
             raise RuntimeError("Value is not defined")
         return self.value
 
@@ -45,7 +45,7 @@ class Either(object):
         Returns:
             is_left_value: the contents of the variable
         """
-        return not self.is_left()
+        return not self.is_left
 
     def get_right(self):
         """Return an error message.
@@ -56,7 +56,7 @@ class Either(object):
         Returns:
             value: value
         """
-        if not self.is_right():
+        if not self.is_right:
             raise RuntimeError("Value is not defined")
         return self.value
 
