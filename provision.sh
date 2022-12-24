@@ -1,14 +1,18 @@
  #!/usr/bin/env bash
 
+checkStringAndWrite() {
+if grep -Fxq "$1" ~/.bashrc
+then
+    echo "Exist: " $1
+else
+    echo >> ~/.bashrc
+    echo $1 >> ~/.bashrc
+fi
+}
+
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade -y
-
-echo "Loading terminal prompt formatting from .bash_prompt."
-echo >> ~/.bashrc
-echo "# load terminal prompt formatting from .bash_prompt" >> ~/.bashrc
-echo "source ~/.bash_prompt" >> ~/.bashrc
-sudo ln -s /vagrant/.bash_prompt ~/.bash_prompt
 
 echo "Installing curl."
 sudo apt install -y curl
@@ -18,8 +22,12 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 echo "Adding poetry to PATH."
 export PATH="/home/vagrant/.local/bin:$PATH"
-echo >> ~/.bashrc
-echo 'export PATH="/home/vagrant/.local/bin:$PATH' >> ~/.bashrc
+checkStringAndWrite 'export PATH="/home/vagrant/.local/bin:$PATH"'
+
+echo "Loading terminal prompt formatting from .bash_prompt."
+checkStringAndWrite "# load terminal prompt formatting from"
+checkStringAndWrite "source ~/.bash_prompt"
+sudo ln -s /vagrant/.bash_prompt ~/.bash_prompt
 source ~/.bashrc
 
 echo "Installing pip."
