@@ -46,13 +46,10 @@ def make_integer(token_value):
     return Token(TokenType.integer, token_value)
 
 
-def make_plus(token_value):
+def make_plus():
     """Return plus token.
-
-    Args:
-        token_value: token value
 
     Returns:
         token: an plus token
     """
-    return Token(TokenType.plus, token_value)
+    return Token(TokenType.plus, "+")
