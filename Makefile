@@ -24,4 +24,11 @@ build: ## Check and builds a package
 	@make check
 	@poetry build
 
+run_machine:
+	vagrant up; vagrant ssh
+
+remove_machine:
+	vagrant halt
+	vagrant destroy
+
 .PHONY: install format test lint selfcheck check build cc-coverage help
