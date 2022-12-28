@@ -1,94 +1,61 @@
 # -*- coding:utf-8 -*-
 
-"""Lexer's implementation. Simple lexer for large subset of Pascal language.
+"""Leer's implementation. Simple lexer for large subset of Pascal language.
 
-Can process simple arithmetic expressions of the type 3 + 5.
+Can process simple arithmetic expressions of the type 3 + 5, 3 - 5, 11 + 5, 11 - 5
 Work as a finite state machine. It has two states: a number and a sign.
 """
 
 from interpreter.either import make_left, make_right
-from interpreter.token import make_integer, make_plus
+from interpreter.token import Token, TokenType, make_sign, make_integer, make_eof
+from itertools import takewhile
 
 
-class Lexer(object):
-    """Simple lexer's implementation."""
+class TextIterator(object):
+    def __init__(self, text):
+        self.text = text
+        self.current_char = None
+        self.position = 0
 
-    def __init__(self):
-        """Construct a new lexer."""
-        # State machine transition function
-        self._process_text = self._process_number
+    def __iter__(self):
+        return self
 
-    def make_tokens(self, text):
-        """Return list of tokens.
+    def __next__(self):
+        if self.position < len(self.text):
+            self.current_char = self.text[self.position]
+            self.position += 1
+            return self.current_char
+        raise StopIteration
 
-        Args:
-            text: program text
-
-        Returns:
-            tokens: list of tokens
-        """
-        tokens = []
-
-        for symbol in text:
-            either_token = self._process_text(symbol)
-            if is_token(either_token):
-                tokens.append(get_token(either_token))
-
-        return tokens
-
-    def _process_number(self, symbol):
-        if symbol.isdigit():
-            self._process_text = self._process_sign
-            return integer_either_token(symbol)
-        return make_left("value isn't digit")
-
-    def _process_sign(self, symbol):
-        if symbol == "+":
-            self._process_text = self._process_number
-            return plus_either_token()
-        return make_left("value isn't sign")
+    def get_current_char(self):
+        return self.current_char
 
 
-def is_token(either_token):
-    """Check if the monad contains a value or an error.
-
-    Args:
-        either_token: eiter monad
-
-    Returns:
-        value: True if the monad contains value
-    """
-    return either_token.is_right
+def get_tokens(text):
+    tokens = []
+    for token in get_token(text):
+        tokens.append(token)
+    return iter(tokens)
 
 
-def get_token(either_token):
-    """Return value from monad.
-
-    Args:
-        either_token: eiter monad
-
-    Returns:
-        value: value from monad
-    """
-    return either_token.get_right()
-
-
-def plus_either_token():
-    """Return token plus in either monad.
-
-    Returns:
-        either: token plus in either monad
-    """
-    return make_right(make_plus())
+def get_token(text):
+    iterator = TextIterator(text)
+    for char in iterator:
+        if char.isspace():
+            continue
+        if char.isdigit():
+            token = make_integer(parse_integer(char, iterator))
+            char = iterator.get_current_char()
+            yield token
+        if char == "+":
+            yield make_sign("+")
+        if char == "-":
+            yield make_sign("-")
+    return make_eof()
 
 
-def integer_either_token(integer):
-    """Return token integer in either monad.
-
-    Args:
-        integer: just integer
-
-    Returns:
-        integer: token integer in either monad
-    """
-    return make_right(make_integer(integer))
+def parse_integer(letter, text):
+    result = letter
+    for digit in takewhile(lambda d: d.isdigit(), text):
+        result += digit
+    return int(result)
