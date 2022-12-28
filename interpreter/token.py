@@ -9,7 +9,12 @@ class TokenType(Enum):
     """Token's type implementation."""
 
     integer = 0
-    plus = 1
+    plus = (1,)
+    minus = (2,)
+    multiply = (3,)
+    divide = (4,)
+    eof = (5,)
+    error = 6
 
 
 class Token(object):
@@ -34,22 +39,21 @@ class Token(object):
         return "Token: type: {0}, value: {1}".format(self.type, self.value)
 
 
-def make_integer(token_value):
-    """Return integer token.
-
-    Args:
-        token_value: token value
-
-    Returns:
-        token: an integer token
-    """
-    return Token(TokenType.integer, token_value)
+_signs = {
+    "+": Token(TokenType.plus, "+"),
+    "-": Token(TokenType.minus, "-"),
+    "*": Token(TokenType.multiply, "*"),
+    "/": Token(TokenType.divide, "/"),
+}
 
 
-def make_plus():
-    """Return plus token.
+def make_sign(sign):
+    return _signs.get(sign, Token(TokenType.error, "?"))
 
-    Returns:
-        token: an plus token
-    """
-    return Token(TokenType.plus, "+")
+
+def make_integer(value):
+    return Token(TokenType.integer, value)
+
+
+def make_eof():
+    return Token(TokenType.eof, "")
