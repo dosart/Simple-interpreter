@@ -4,7 +4,7 @@
 
 import pytest
 from interpreter.lexer import get_tokens
-from interpreter.token import Token, TokenType, make_integer, make_sign, make_eof
+from interpreter.token import make_integer, make_sign, make_eof
 
 
 @pytest.mark.parametrize("test_input", ["", " ", "  "])
@@ -14,9 +14,13 @@ def test_empty_line(test_input):
     Args:
         test_input: data for test
     """
-    with pytest.raises(StopIteration):
-        tokens = get_tokens(test_input)
-        next(tokens)
+
+    tokens = get_tokens(test_input)
+    token = next(tokens)
+    expected = make_eof()
+
+    assert expected.type == token.type
+    assert expected.value == token.value
 
 
 @pytest.mark.parametrize("test_input", ["1", "1", "1", " 1", " 1 ", "   1   "])
@@ -52,7 +56,8 @@ def test_simple_expr1(test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input", ["11+22", "11 + 22", " 11+ 22", " 11   +22", " 11 + 22 "]
+    "test_input",
+    ["11+22", "11 + 22", " 11+ 22", " 11   +22", " 11 + 22 "],
 )
 def test_simple_expr2(test_input):
     """Check a simple expression.
@@ -88,7 +93,8 @@ def test_simple_expr3(test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input", ["11-22", "11 - 22", " 11- 22", " 11   -22", " 11 - 22 "]
+    "test_input",
+    ["11-22", "11 - 22", " 11- 22", " 11   -22", " 11 - 22 "],
 )
 def test_simple_expr4(test_input):
     """Check a simple expression.

@@ -48,12 +48,33 @@ _signs = {
 
 
 def make_sign(sign):
+    """Return integer token.
+
+    Args:
+        sign: token value
+
+    Returns:
+        token: an sign token
+    """
     return _signs.get(sign, Token(TokenType.error, "?"))
 
 
-def make_integer(value):
-    return Token(TokenType.integer, value)
+def make_integer(token_value):
+    """Return integer token.
+
+    Args:
+        token_value: token value
+
+    Returns:
+        token: an integer token
+    """
+    return Token(TokenType.integer, token_value)
 
 
 def make_eof():
+    """Return integer token.
+
+    Returns:
+        token: an eof token
+    """
     return Token(TokenType.eof, "")
