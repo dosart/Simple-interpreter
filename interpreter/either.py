@@ -83,3 +83,15 @@ def make_right(value):
         either: either with value
     """
     return Either(value=value, is_left=False)
+
+
+def make_error_message(message):
+    """Return error message.
+
+    Args:
+        message: error message
+
+    Returns:
+        str: error message
+    """
+    return "Error: {0}".format(message.lower())
