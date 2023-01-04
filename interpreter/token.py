@@ -3,6 +3,7 @@
 """Token's implementation. A token is an object that has a value and type."""
 
 from enum import Enum
+from operator import add, mul, sub, truediv
 
 
 class TokenType(Enum):
@@ -40,10 +41,10 @@ class Token(object):
 
 
 _signs = {
-    "+": Token(TokenType.plus, "+"),
-    "-": Token(TokenType.minus, "-"),
-    "*": Token(TokenType.multiply, "*"),
-    "/": Token(TokenType.divide, "/"),
+    "+": Token(TokenType.plus, add),
+    "-": Token(TokenType.minus, sub),
+    "*": Token(TokenType.multiply, mul),
+    "/": Token(TokenType.divide, truediv),
 }
 
 
