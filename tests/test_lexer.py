@@ -4,7 +4,7 @@
 
 import pytest
 from interpreter.lexer import get_tokens
-from interpreter.token import make_integer, make_sign, make_eof
+from interpreter.token import make_eof, make_integer, make_sign
 
 
 @pytest.mark.parametrize("test_input", ["", " ", "  "])
@@ -14,7 +14,6 @@ def test_empty_line(test_input):
     Args:
         test_input: data for test
     """
-
     tokens = get_tokens(test_input)
     token = next(tokens)
     expected = make_eof()
