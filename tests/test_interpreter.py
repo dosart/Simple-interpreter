@@ -6,7 +6,12 @@ from itertools import permutations
 
 import pytest
 from interpreter.either import make_left, make_right
-from interpreter.intereter import apply, bind, is_token_plus_or_minus, try_get_integer
+from interpreter.intereter import (
+    apply_plus_or_minus,
+    bind,
+    is_token_plus_or_minus,
+    try_get_integer,
+)
 from interpreter.lexer import get_tokens
 from interpreter.token import Token, TokenType, make_eof, make_integer, make_sign
 
@@ -43,14 +48,14 @@ def test_is_token_plus_or_minus2(test_input):
     "test_input",
     ["10+11", "10 + 11 ", " 10 + 11 "],
 )
-def test_apply1(test_input):
+def test_apply_plus_or_minus1(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 21
 
 
@@ -58,14 +63,14 @@ def test_apply1(test_input):
     "test_input",
     ["10+11+11", "10 + 11 + 11 ", " 10 + 11   + 11"],
 )
-def test_apply2(test_input):
+def test_apply_plus_or_minus2(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 32
 
 
@@ -73,14 +78,14 @@ def test_apply2(test_input):
     "test_input",
     ["10", "10 ", " 10 "],
 )
-def test_apply3(test_input):
+def test_apply_plus_or_minus3(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 10
 
 
@@ -88,14 +93,14 @@ def test_apply3(test_input):
     "test_input",
     ["10-5", "10 - 5 ", " 10 - 5   "],
 )
-def test_apply4(test_input):
+def test_apply_plus_or_minus4(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 5
 
 
@@ -103,14 +108,14 @@ def test_apply4(test_input):
     "test_input",
     ["10-5-2", "10 - 5 -2 ", " 10 - 5 - 2  "],
 )
-def test_apply5(test_input):
+def test_apply_plus_or_minus5(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 3
 
 
@@ -118,14 +123,14 @@ def test_apply5(test_input):
     "test_input",
     ["10-5+2", "10 - 5 +2 ", " 10 - 5 + 2  "],
 )
-def test_apply6(test_input):
+def test_apply_plus_or_minus6(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 7
 
 
@@ -133,14 +138,14 @@ def test_apply6(test_input):
     "test_input",
     ["10-2-5+2", "10 -2 - 5 +2 ", " 10-2 - 5 + 2  "],
 )
-def test_apply7(test_input):
+def test_apply_plus_or_minus7(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.get_right().value == 5
 
 
@@ -209,12 +214,12 @@ def test_bind_bad():
     "test_input",
     ["10-2-", "+10 -2", " 10 ++ 3  ", "-10++2++4"],
 )
-def test_apply_bad1(test_input):
+def test_apply_plus_or_minus_bad1(test_input):
     """Check a simple expression.
 
     Args:
         test_input: data for test
     """
     tokens = get_tokens(test_input)
-    result = apply(tokens)
+    result = apply_plus_or_minus(tokens)
     assert result.is_left is True
