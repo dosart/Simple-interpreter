@@ -203,3 +203,18 @@ def test_bind_bad():
     for arg1, arg2 in permutations(tokens):
         result = bind(func, arg1, arg2)
         assert result.is_left is True
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    ["10-2-", "+10 -2", " 10 ++ 3  ", "-10++2++4"],
+)
+def test_apply_bad1(test_input):
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    result = apply(tokens)
+    assert result.is_left is True
