@@ -90,10 +90,8 @@ def get_token(text):
             token = make_integer(_parse_integer(char, iterator))
             char = iterator.current_item
             yield token
-        if char == "+":
-            yield make_sign("+")
-        if char == "-":
-            yield make_sign("-")
+        if char in {"+", "-", "*", "/"}:
+            yield make_sign(char)
     yield make_eof()
 
 
