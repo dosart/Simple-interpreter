@@ -8,6 +8,30 @@ from interpreter.either import make_error_message, make_left, make_right
 from interpreter.token import TokenType, make_integer
 
 
+def apply_plus_or_minus(tokens):
+    """Calculate simple arithmetic expressions (+ and - sign only).
+
+    Args:
+        tokens: the expression consists of tokens
+
+    Returns:
+        int: the result of calculating the expression
+    """
+    return apply(tokens, is_token_plus_or_minus)
+
+
+def apply_multiply_or_divide(tokens):
+    """Calculate simple arithmetic expressions (* and / sign only).
+
+    Args:
+        tokens: the expression consists of tokens
+
+    Returns:
+        int: the result of calculating the expression
+    """
+    return apply(tokens, is_token_multiply_or_divide)
+
+
 def is_token_plus_or_minus(token):
     """Return true if the token is equal to plus or minus.
 
@@ -18,6 +42,35 @@ def is_token_plus_or_minus(token):
         bool: true if the token is equal to plus or minus
     """
     return token.type in {TokenType.plus, TokenType.minus}
+
+
+def is_token_multiply_or_divide(token):
+    """Return true if the token is equal to multiply or divide.
+
+    Args:
+        token: token for verification
+
+    Returns:
+        bool: true if the token is equal to multiply or divide
+    """
+    return token.type in {TokenType.multiply, TokenType.divide}
+
+
+def apply(tokens, predicate):
+    """Calculate simple arithmetic expressions.
+
+    Args:
+        tokens: the expression consists of tokens
+        predicate: which tokens need to be returned
+
+    Returns:
+        int: the result of calculating the expression
+    """
+    result = try_get_integer(tokens)
+    for sign in takewhile(predicate, tokens):
+        right = try_get_integer(tokens)
+        result = bind(sign, result, right)
+    return result
 
 
 def try_get_integer(iterator):
@@ -88,19 +141,3 @@ def bind(func, arg1, arg2):
     result = make_integer(0)
     result.value = func.value(one.value, two.value)
     return make_right(result)
-
-
-def apply(tokens):
-    """Calculate simple arithmetic expressions (+ and -sign only).
-
-    Args:
-        tokens: the expression consists of tokens
-
-    Returns:
-        int: the result of calculating the expression
-    """
-    result = try_get_integer(tokens)
-    for sign in takewhile(is_token_plus_or_minus, tokens):
-        right = try_get_integer(tokens)
-        result = bind(sign, result, right)
-    return result

@@ -7,6 +7,7 @@ from itertools import permutations
 import pytest
 from interpreter.either import make_left, make_right
 from interpreter.intereter import (
+    apply_multiply_or_divide,
     apply_plus_or_minus,
     bind,
     is_token_plus_or_minus,
@@ -222,4 +223,64 @@ def test_apply_plus_or_minus_bad1(test_input):
     """
     tokens = get_tokens(test_input)
     result = apply_plus_or_minus(tokens)
+    assert result.is_left is True
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    ["10*11", "10 * 11 ", " 10 * 11 "],
+)
+def test_apply_multiply_or_divide1(test_input):
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    result = apply_multiply_or_divide(tokens)
+    assert result.get_right().value == 110
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    ["10/1", "10 / 1 ", " 10 / 1 "],
+)
+def test_apply_multiply_or_divide2(test_input):
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    result = apply_multiply_or_divide(tokens)
+    assert result.get_right().value == 10
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    ["10*2*5/2", "10 *2 * 5 /2 ", " 10*2 * 5 / 2  "],
+)
+def test_apply_multiply_or_divide3(test_input):
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    result = apply_multiply_or_divide(tokens)
+    assert result.get_right().value == 50
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    ["10*2*", "*10 /2", " 10 ** 3  ", "*10//2**4"],
+)
+def test_apply_multiply_or_divide_bad1(test_input):
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    result = apply_multiply_or_divide(tokens)
     assert result.is_left is True
