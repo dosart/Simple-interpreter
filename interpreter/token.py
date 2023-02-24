@@ -9,13 +9,15 @@ from operator import add, mul, sub, truediv
 class TokenType(Enum):
     """Token's type implementation."""
 
-    integer = 0
+    integer = (0,)
     plus = (1,)
     minus = (2,)
     multiply = (3,)
     divide = (4,)
     eof = (5,)
-    error = 6
+    error = (6,)
+    lparen = (7,)
+    rparen = 8
 
 
 class Token(object):
@@ -79,3 +81,19 @@ def make_eof():
         token: an eof token
     """
     return Token(TokenType.eof, "")
+
+
+def make_paren(paren):
+    """Return paren token.
+
+    Args:
+        paren: token value
+
+    Returns:
+        token: an paren token
+    """
+    if paren == "(":
+        return Token(TokenType.lparen, "(")
+    if paren == ")":
+        return Token(TokenType.rparen, ")")
+    return Token(TokenType.error, "?")
