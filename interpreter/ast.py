@@ -16,13 +16,19 @@ class Num(AST):
         """Construct a new int object.
 
         Args:
-            token(Token(TokenType.integer, token_value)): integer token
+            token: integer token
         """
         self.token = token
         self.value = token.value
 
     def __repr__(self):
-        return "Num(%d)" % self.value
+        """Represent object as a string.
+
+        Returns:
+            str: represent object as a string
+
+        """
+        return "Num({value})".format(value=self.value)
 
 
 class BinaryOperation(AST):
@@ -41,4 +47,14 @@ class BinaryOperation(AST):
         self.right = right
 
     def __repr__(self):
-        return "BinaryOperation(%s, %s, %s)" % (self.op, self.left, self.right)
+        """Represent object as a string.
+
+        Returns:
+            str: represent object as a string
+
+        """
+        return "BinaryOperation({operator}, {left_child}, {right_child})".format(
+            operator=self.op,
+            left_child=self.left,
+            right_child=self.right,
+        )
