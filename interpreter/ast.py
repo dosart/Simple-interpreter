@@ -58,3 +58,29 @@ class BinaryOperation(AST):
             left_child=self.left,
             right_child=self.right,
         )
+
+
+class UnaryOperation(AST):
+    """Implementation of the unary operator."""
+
+    def __init__(self, op, expr):
+        """Construct a new unary operator.
+
+        Args:
+            op: operator token
+            expr: expression to evaluate
+        """
+        self.op = op
+        self.expr = expr
+
+    def __repr__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: represent object as a string
+
+        """
+        return "UnaryOperation({operator}, {expression})".format(
+            operator=self.op,
+            expression=self.right,
+        )
