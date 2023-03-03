@@ -71,7 +71,7 @@ def make_integer(token_value):
     Returns:
         token: an integer token
     """
-    return Token(TokenType.integer, token_value)
+    return Token(TokenType.integer, int(token_value))
 
 
 def make_eof():
