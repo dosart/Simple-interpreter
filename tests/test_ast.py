@@ -12,7 +12,7 @@ def test_make_num():
     node = Num(three_node)
 
     assert node.token is three_node
-    assert node.value == "3"
+    assert node.value == 3
 
 
 def test_make_simple_arithmetic_expression():
@@ -35,13 +35,13 @@ def test_make_simple_arithmetic_expression():
     assert mul_node.op.type == TokenType.multiply
     assert mul_node.right.token.type == TokenType.integer
 
-    assert mul_node.left.token.value == "3"
-    assert mul_node.right.token.value == "7"
+    assert mul_node.left.token.value == 3
+    assert mul_node.right.token.value == 7
 
     assert plus_node.left.token.type == TokenType.integer
     assert plus_node.op.type == TokenType.plus
 
-    assert plus_node.left.token.value == "2"
+    assert plus_node.left.token.value == 2
     assert plus_node.right is mul_node
 
 
@@ -63,4 +63,4 @@ def test_make_unary_operation():
 
     assert expr_node.right.op is minus_token
     assert expr_node.right.expr.op is minus_token
-    assert expr_node.right.expr.expr.value == "2"
+    assert expr_node.right.expr.expr.value == 2
