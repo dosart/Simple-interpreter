@@ -2,7 +2,7 @@
 
 """Parser's implementation."""
 
-from intereter.ast import BinaryOperation, Num
+from interpreter.ast import BinaryOperation, Num
 from interpreter.token import TokenType
 
 
@@ -25,7 +25,7 @@ class Parser(object):
             lexer: it can return a token from a stream
         """
         self.lexer = lexer
-        self.current_token = self.lexer.get_token()
+        self.current_token = next(lexer)
 
     def parse(self):
         """Return AST from stream token.
@@ -101,7 +101,7 @@ class Parser(object):
         # and assign the next token to the self.current_token,
         # otherwise raise an exception.
         if self.current_token.type == token_type:
-            self.current_token = self.lexer.get_token()
+            self.current_token = next(self.lexer)
         else:
             self._error()
 
@@ -117,18 +117,4 @@ class Parser(object):
 class InvalidSyntaxError(Exception):
     """Simple exception."""
 
-    def __init__(self, message):
-        """Construct a new exception.
-
-        Args:
-            message: message of exception
-        """
-        self.message = message
-
-    def __str__(self):
-        """Return message.
-
-        Returns:
-            message: message of exception
-        """
-        return self.message
+    pass
