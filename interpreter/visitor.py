@@ -4,7 +4,7 @@
 
 from functools import singledispatch
 
-from interpreter.ast import BinaryOperation, Num
+from interpreter.ast import BinaryOperation, Num, UnaryOperation
 from interpreter.token import TokenType
 
 
@@ -23,7 +23,7 @@ def visit(node):
 
 
 @visit.register(Num)
-def visit(node):
+def __(node):
     """Visit Num node and return value.
 
     Args:
@@ -36,7 +36,7 @@ def visit(node):
 
 
 @visit.register(BinaryOperation)
-def visit(node):
+def __(node):
     """Visit BinaryOperation node and return calculation result.
 
     Args:
@@ -52,4 +52,22 @@ def visit(node):
     elif node.op.type == TokenType.multiply:
         return visit(node.left) * visit(node.right)
     elif node.op.type == TokenType.divide:
+        if isinstance(node.right, Num) and node.right.value == 0:
+            return 0
         return visit(node.left) / visit(node.right)
+
+
+@visit.register(UnaryOperation)
+def __(node):
+    """Visit UnaryOperation node and return calculation result.
+
+    Args:
+        node: unary operation
+
+    Returns:
+        value: calculation result
+    """
+    if node.op.type == TokenType.plus:
+        return +visit(node.expr)
+    elif node.op.type == TokenType.minus:
+        return -visit(node.expr)
