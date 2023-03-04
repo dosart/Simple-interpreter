@@ -3,7 +3,6 @@
 """Token's implementation. A token is an object that has a value and type."""
 
 from enum import Enum
-from operator import add, mul, sub, truediv
 
 
 class TokenType(Enum):
@@ -42,12 +41,20 @@ class Token(object):
         return "Token: type: {0}, value: {1}".format(self.type, self.value)
 
 
-_signs = {
-    "+": Token(TokenType.plus, add),
-    "-": Token(TokenType.minus, sub),
-    "*": Token(TokenType.multiply, mul),
-    "/": Token(TokenType.divide, truediv),
-}
+def make_reserved_symbols():
+    """Return reserved interpreter symbols.
+
+    Returns:
+        dict: key(str), value(Token)
+    """
+    return {
+        "+": Token(TokenType.plus, "+"),
+        "-": Token(TokenType.minus, "-"),
+        "*": Token(TokenType.multiply, "*"),
+        "/": Token(TokenType.divide, "/"),
+        "(": Token(TokenType.lparen, "("),
+        ")": Token(TokenType.rparen, ")"),
+    }
 
 
 def make_sign(sign):
@@ -59,7 +66,8 @@ def make_sign(sign):
     Returns:
         token: an sign token
     """
-    return _signs.get(sign, Token(TokenType.error, "?"))
+    symbols = make_reserved_symbols()
+    return symbols.get(sign, Token(TokenType.error, "?"))
 
 
 def make_integer(token_value):
@@ -81,19 +89,3 @@ def make_eof():
         token: an eof token
     """
     return Token(TokenType.eof, "")
-
-
-def make_paren(paren):
-    """Return paren token.
-
-    Args:
-        paren: token value
-
-    Returns:
-        token: an paren token
-    """
-    if paren == "(":
-        return Token(TokenType.lparen, "(")
-    if paren == ")":
-        return Token(TokenType.rparen, ")")
-    return Token(TokenType.error, "?")
