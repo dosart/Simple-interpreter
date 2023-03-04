@@ -9,7 +9,7 @@ Work as a finite state machine. It has two states: a number and a sign.
 
 from itertools import takewhile
 
-from interpreter.token import make_eof, make_integer, make_paren, make_sign
+from interpreter.token import make_eof, make_integer, make_reserved_symbols
 
 
 class TextIterator(object):
@@ -83,6 +83,7 @@ def get_token(text):
         tokens: token iterator
     """
     iterator = TextIterator(text)
+    symbols = make_reserved_symbols()
     for char in iterator:
         if char.isspace():
             continue
@@ -90,10 +91,8 @@ def get_token(text):
             token = make_integer(_parse_integer(char, iterator))
             char = iterator.current_item
             yield token
-        if char in {"+", "-", "*", "/"}:
-            yield make_sign(char)
-        if char in {"(", ")"}:
-            yield make_paren(char)
+        if char in symbols:
+            yield symbols[char]
     yield make_eof()
 
 
