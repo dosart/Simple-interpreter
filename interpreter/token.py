@@ -16,7 +16,10 @@ class TokenType(Enum):
     eof = (5,)
     error = (6,)
     lparen = (7,)
-    rparen = 8
+    rparen = (8,)
+    dot = (9,)
+    semi = (10,)
+    assigin = 11
 
 
 class Token(object):
@@ -54,6 +57,9 @@ def make_reserved_symbols():
         "/": Token(TokenType.divide, "/"),
         "(": Token(TokenType.lparen, "("),
         ")": Token(TokenType.rparen, ")"),
+        ".": Token(TokenType.dot, ","),
+        ";": Token(TokenType.semi, ";"),
+        ":=": Token(TokenType.assigin, ":="),
     }
 
 
