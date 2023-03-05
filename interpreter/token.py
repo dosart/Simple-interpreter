@@ -19,7 +19,9 @@ class TokenType(Enum):
     rparen = (8,)
     dot = (9,)
     semi = (10,)
-    assigin = 11
+    assigin = (11,)
+    begin = (12,)
+    end
 
 
 class Token(object):
@@ -60,6 +62,8 @@ def make_reserved_symbols():
         ".": Token(TokenType.dot, ","),
         ";": Token(TokenType.semi, ";"),
         ":=": Token(TokenType.assigin, ":="),
+        "BEGIN": Token(TokenType.begin, "BEGIN"),
+        "END": Token(TokenType.end, "END"),
     }
 
 
