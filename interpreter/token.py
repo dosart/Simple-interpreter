@@ -21,7 +21,8 @@ class TokenType(Enum):
     semi = (10,)
     assigin = (11,)
     begin = (12,)
-    end
+    end = (13,)
+    variable = 14
 
 
 class Token(object):
@@ -67,6 +68,19 @@ def make_reserved_symbols():
     }
 
 
+def make_reserved_symbol_token(reserved_symbol):
+    """Return token for reserved symbol.
+
+    Args:
+        reserved_symbol(str): reserved symbol sign
+
+    Returns:
+        token: an reserved symbol token or error token
+    """
+    reserved_symbols = make_reserved_symbols()
+    return reserved_symbols.get(reserved_symbol, Token(TokenType.error, "?"))
+
+
 def make_sign(sign):
     """Return integer token.
 
@@ -96,6 +110,18 @@ def make_eof():
     """Return integer token.
 
     Returns:
-        token: an eof token
+        token: eof token
     """
     return Token(TokenType.eof, "")
+
+
+def make_variable(variable_name):
+    """Return variable token.
+
+    Args:
+        variable_name: variable name
+
+    Returns:
+        token: variable token
+    """
+    return Token(TokenType.variable, variable_name)
