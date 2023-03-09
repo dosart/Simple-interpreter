@@ -2,7 +2,14 @@
 
 """Parser's implementation."""
 
-from interpreter.ast import BinaryOperation, Num
+from interpreter.ast import (
+    BinaryOperation,
+    Num,
+    CompoundOperator,
+    AssiginOperator,
+    Variable,
+    EmptyOperator,
+)
 from interpreter.token import TokenType
 
 
@@ -33,7 +40,57 @@ class Parser(object):
         Returns:
             tree: abstract syntax tree of expression
         """
-        return self._expr()
+        node = self._program()
+        if self.current_token.type != TokenType.eof:
+            self._error()
+        return node
+
+    def _program(self):
+        node = self._compound_statement()
+        self._eat(TokenType.dot)
+        return node
+
+    def _compound_statement(self):
+        self._eat(TokenType.begin)
+        nodes = self._statement_list()
+        self.eat(TokenType.end)
+        root = CompoundOperator()
+
+        for node in nodes:
+            root.children.append(node)
+
+    def _statement_list(self):
+        node = self._statement()
+        statements = [node]
+
+        while self.current_token.type == TokenType.semi:
+            self.eat(TokenType.semi)
+            statements.append(self._statement())
+        return statements
+
+    def _statement(self):
+        if self.current_token.type == TokenType.begin:
+            node = self._compound_statement()
+        elif self.current_token.type == TokenType.variable:
+            node = self._assignment_statement()
+        else:
+            node = self._empty()
+        return node
+
+    def _assignment_statement(self):
+        variable = self._variable()
+        assignment_operator = self.current_token
+        self.eat(TokenType.assigin)
+        expression = self._expr()
+        return AssiginOperator(variable, assignment_operator, expression)
+
+    def _variable(self):
+        node = Variable(self.current_token)
+        self._eat(TokenType.variable)
+        return node
+
+    def _empty(self):
+        return EmptyOperator()
 
     def _expr(self):
         """Return the result of a nonterminal term.
@@ -89,6 +146,8 @@ class Parser(object):
             node = self.expr()
             self._eat(TokenType.rparen)
             return node
+        else:
+            return self._variable()
 
     def _eat(self, token_type):
         """Compare the current token type with the passed token.
