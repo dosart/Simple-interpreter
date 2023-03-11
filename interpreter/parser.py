@@ -40,28 +40,43 @@ class Parser(object):
         Returns:
             tree: abstract syntax tree of expression
         """
-        node = self._program()
+        ast = self._program()
         if self.current_token.type != TokenType.eof:
             self._error()
-        return node
+        return ast
 
     def _program(self):
-        node = self._compound_statement()
+        """Return the result of a nonterminal term.
+
+        Returns:
+            program : compound statement DOT
+        """
+        ast = self._compound_statement()
         self._eat(TokenType.dot)
-        return node
+        return ast
 
     def _compound_statement(self):
-        self._eat(TokenType.begin)
-        nodes = self._statement_list()
-        self.eat(TokenType.end)
-        root = CompoundOperator()
+        """Return the result of a nonterminal term.
 
-        for node in nodes:
-            root.children.append(node)
+        Returns:
+
+            compound statement : BEGIN statement list END
+        """
+        self._eat(TokenType.begin)
+
+        root = CompoundOperator()
+        root.set_compound_statement(self._statement_list())
+
+        self._eat(TokenType.end)
 
     def _statement_list(self):
-        node = self._statement()
-        statements = [node]
+        """Return the result of a nonterminal term.
+
+        Returns:
+            statement list : statement |
+                             statement SEMI statement list
+        """
+        statements = [self._statement()]
 
         while self.current_token.type == TokenType.semi:
             self.eat(TokenType.semi)
@@ -69,22 +84,37 @@ class Parser(object):
         return statements
 
     def _statement(self):
+        """Return the result of a nonterminal term.
+
+        Returns:
+            statement : compound_statement   |
+                        assignment_statement |
+                        empty
+        """
         if self.current_token.type == TokenType.begin:
-            node = self._compound_statement()
+            return self._compound_statement()
         elif self.current_token.type == TokenType.variable:
-            node = self._assignment_statement()
-        else:
-            node = self._empty()
-        return node
+            return self._assignment_statement()
+        return self._empty()
 
     def _assignment_statement(self):
+        """Return the result of a nonterminal term.
+
+        Returns:
+            assignment_statement : variable := expr
+        """
         variable = self._variable()
         assignment_operator = self.current_token
-        self.eat(TokenType.assigin)
+        self._eat(TokenType.assigin)
         expression = self._expr()
         return AssiginOperator(variable, assignment_operator, expression)
 
     def _variable(self):
+        """Return the result of a nonterminal term.
+
+        Returns:
+            variable : ^[a-zA-Z]+$
+        """
         node = Variable(self.current_token)
         self._eat(TokenType.variable)
         return node
@@ -135,10 +165,20 @@ class Parser(object):
         """Return the result of a nonterminal factor.
 
         Returns:
-            factor : INTEGER | LPAREN expr RPAREN
+            factor : plus  factor |
+                     minus factor |
+                     integer      |
+                     lparen expr rparen |
+                     variable
         """
         token = self.current_token
-        if token.type == TokenType.integer:
+        if token.type == TokenType.plus:
+            self_eat(TokenType.plus)
+            return UnaryOperation(token, self.factor())
+        elif token.type == TokenType.minus:
+            self_eat(TokenType.minus)
+            return UnaryOperation(token, self.factor())
+        elif token.type == TokenType.integer:
             self._eat(TokenType.integer)
             return Num(token)
         elif token.type == TokenType.lparen:
