@@ -4,7 +4,15 @@
 
 from functools import singledispatch
 
-from interpreter.ast import BinaryOperation, Num, UnaryOperation
+from interpreter.ast import (
+    BinaryOperation,
+    Num,
+    UnaryOperation,
+    CompoundOperator,
+    AssiginOperator,
+    Variable,
+    EmptyOperator,
+)
 from interpreter.token import TokenType
 
 
@@ -71,3 +79,38 @@ def __(node):
         return +visit(node.expr)
     elif node.op.type == TokenType.minus:
         return -visit(node.expr)
+
+
+@visit.register(CompoundOperator)
+def __(node):
+    """Visit CompoundOperator node and return calculation result.
+
+    Args:
+        node: compound operator
+    """
+    for child in node.compaund_statement:
+        visit(child)
+
+
+@visit.register(EmptyOperator)
+def __(node):
+    """Visit EmptyOperator and do nothing.
+
+    Args:
+        node: empty operator
+    """
+    pass
+
+
+_GLOBAL_SCOPE = {}
+
+
+@visit.register(AssiginOperator)
+def __(node):
+    """Visit assignment operator and save the value of the variable in the global scope.
+
+    Args:
+        node: empty operator
+    """
+    variable_name = node.left.value
+    _GLOBAL_SCOPE[variable_name] = visit(node.right)
