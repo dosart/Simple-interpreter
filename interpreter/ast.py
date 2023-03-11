@@ -90,7 +90,15 @@ class CompoundOperator(AST):
     """Represents a 'BEGIN ... END' block"""
 
     def __init__(self):
-        self.children = []
+        self._statement_list = []
+
+    def set_compound_statement(self, compound_statement):
+        for statement in compound_statement:
+            self._statement_list.append(statement)
+
+    @property
+    def compaund_statement(self):
+        return self._statement_list
 
 
 class AssiginOperator(AST):
