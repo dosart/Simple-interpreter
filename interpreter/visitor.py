@@ -2,38 +2,52 @@
 
 """Implementing a Visitor template for AST."""
 
-from functools import singledispatch
 
 from interpreter.ast import (
+    AssiginOperator,
     BinaryOperation,
+    CompoundOperator,
+    EmptyOperator,
     Num,
     UnaryOperation,
-    CompoundOperator,
-    AssiginOperator,
     Variable,
-    EmptyOperator,
 )
 from interpreter.token import TokenType
 
 
 class CalculationVisitir(object):
-    def __init__(self):
-        self._global_scope = {}
+    """Represent a visitor to bypass the AST and visit the result."""
 
-    def calculate(self, node):
+    def __init__(self, global_scope):
+        """Construct a new visitor.
+
+        Args:
+            global_scope (dict): global scope for storing variables
+        """
+        self._global_scope = global_scope
+
+    def visit(self, node):
+        """Visit all nodes in AST.
+
+        Args:
+            node: node to run
+
+        Returns:
+            result: calculation result (tree traversal result)
+        """
         methods = {
-            Num: self._calculate_num,
-            BinaryOperation: self._calculate_binary_operation,
-            UnaryOperation: self._calculate_unary_operation,
-            CompoundOperator: self._calculate_compaund_operator,
-            EmptyOperator: self._calculate_empty_operator,
-            AssiginOperator: self._calculate_assigin_operator,
-            Variable: self._calculate_variable,
+            Num: self._visit_num,
+            BinaryOperation: self._visit_binary_operation,
+            UnaryOperation: self._visit_unary_operation,
+            CompoundOperator: self._visit_compaund_operator,
+            EmptyOperator: self._visit_empty_operator,
+            AssiginOperator: self._visit_assigin_operator,
+            Variable: self._visit_variable,
         }
         method = methods.get(type(node), self._error)
-        method(node)
+        return method(node)
 
-    def _calculate_num(self, node):
+    def _visit_num(self, node):
         """Visit Num node and return value.
 
         Args:
@@ -42,10 +56,9 @@ class CalculationVisitir(object):
         Returns:
             value: calculation result
         """
+        return node.value
 
-    return node.value
-
-    def _calculate_binary_operation(self, node):
+    def _visit_binary_operation(self, node):
         """Visit BinaryOperation node and return calculation result.
 
         Args:
@@ -55,17 +68,17 @@ class CalculationVisitir(object):
             value: calculation result
         """
         if node.op.type == TokenType.plus:
-            return visit(node.left) + visit(node.right)
+            return self.visit(node.left) + self.visit(node.right)
         elif node.op.type == TokenType.minus:
-            return visit(node.left) - visit(node.right)
+            return self.visit(node.left) - self.visit(node.right)
         elif node.op.type == TokenType.multiply:
-            return visit(node.left) * visit(node.right)
+            return self.visit(node.left) * self.visit(node.right)
         elif node.op.type == TokenType.divide:
             if isinstance(node.right, Num) and node.right.value == 0:
                 return 0
-        return visit(node.left) / visit(node.right)
+        return self.visit(node.left) / self.visit(node.right)
 
-    def _calculate_unary_operation(self, node):
+    def _visit_unary_operation(self, node):
         """Visit UnaryOperation node and return calculation result.
 
         Args:
@@ -75,36 +88,39 @@ class CalculationVisitir(object):
             value: calculation result
         """
         if node.op.type == TokenType.plus:
-            return +visit(node.expr)
+            return +self.visit(node.expr)
         elif node.op.type == TokenType.minus:
-            return -visit(node.expr)
+            return -self.visit(node.expr)
 
-    def _calculate_compaund_operator(self, node):
+    def _visit_compaund_operator(self, node):
         """Visit CompoundOperator node and return calculation result.
 
         Args:
             node: compound operator
         """
         for statement in node.compaund_statement:
-            visit(statement)
+            self.visit(statement)
 
-    def _calculate_empty_operator():
+    def _visit_empty_operator(self, node):
         pass
 
-    def _calculate_assigin_operator(self, node):
+    def _visit_assigin_operator(self, node):
         """Visit assignment operator and save the value of the variable in the global scope.
 
         Args:
             node: empty operator
         """
         variable_name = node.left.value
-        self._global_scope[variable_name] = visit(node.right)
+        self._global_scope[variable_name] = self.visit(node.right)
 
-    def _calculate_variable(self, node):
+    def _visit_variable(self, node):
         """Visit variable and return value.
 
         Args:
             node: variable
+
+        Raises:
+             NameError: if the variable is not in scope
 
         Returns:
             value: value of variable
@@ -113,17 +129,18 @@ class CalculationVisitir(object):
         val = self._global_scope.get(var_name, None)
         if val is None:
             raise NameError(repr(var_name))
-        else:
-            return val
+        return val
 
     def _error(self, node):
         """Raise error.
+
         Args:
             node: unknown type
+
         Raises:
             AttributeError: raise exception
         """
         type_name = type(node)
         raise AttributeError(
-            "No handler found for {type_name}".format(type_name=type_name)
+            "No handler found for {type_name}".format(type_name=type_name),
         )
