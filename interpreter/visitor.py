@@ -110,8 +110,8 @@ class CalculationVisitir(object):
         Args:
             node: empty operator
         """
-        variable_name = node.left.value
-        self._global_scope[variable_name] = self.visit(node.right)
+        variable_name = node.variable.value
+        self._global_scope[variable_name] = self.visit(node.expr)
 
     def _visit_variable(self, node):
         """Visit variable and return value.
