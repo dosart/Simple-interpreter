@@ -104,17 +104,17 @@ class CompoundOperator(AST):
 class AssiginOperator(AST):
     """Implementation of assign operator."""
 
-    def __init__(self, left, op, right):
+    def __init__(self, variable, op, expr):
         """Construct a new assign operator.
 
         Args:
-            left: variable token
+            left (Variable): variable node
             op: operator token
-            expr: expression to evaluate (BinaryOperation or UnaryOperation)
+            expr: expression to evaluate (BinaryOperation or UnaryOperation or Num)
         """
-        self.left = left
+        self.variable = variable
         self.op = op
-        self.right = right
+        self.expr = expr
 
     def __repr__(self):
         """Represent object as a string.
