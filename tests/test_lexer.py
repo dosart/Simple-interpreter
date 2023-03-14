@@ -168,6 +168,47 @@ def test_begin_assign_end_tokens3(test_input):
         assert token.value == expected.value
 
 
+@pytest.mark.parametrize("test_input", ["BEGIN END .", " BEGIN END  ."])
+def test_begin_assign_end_tokens4(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    expected_values = (
+        make_reserved_symbol_token("BEGIN"),
+        make_reserved_symbol_token("END"),
+        make_reserved_symbol_token("."),
+    )
+    for token, expected in zip(get_tokens(test_input), expected_values):
+        assert token.type == expected.type
+        assert token.value == expected.value
+
+
+@pytest.mark.parametrize(
+    "test_input", ["BEGIN x := 5 + 1 END .", " BEGIN x:=5+1 END  ."]
+)
+def test_begin_assign_end_tokens5(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    expected_values = (
+        make_reserved_symbol_token("BEGIN"),
+        make_variable("x"),
+        make_reserved_symbol_token(":="),
+        make_integer(5),
+        make_reserved_symbol_token("+"),
+        make_integer(1),
+        make_reserved_symbol_token("END"),
+        make_reserved_symbol_token("."),
+    )
+    for token, expected in zip(get_tokens(test_input), expected_values):
+        assert token.type == expected.type
+        assert token.value == expected.value
+
+
 @pytest.mark.parametrize("test_input", ["1", "1", "1", " 1", " 1 ", "   1   "])
 def test_one_integer(test_input):
     """Check a simple expression.
