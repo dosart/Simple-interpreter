@@ -3,12 +3,13 @@
 """Parser's implementation."""
 
 from interpreter.ast import (
-    BinaryOperation,
-    Num,
-    CompoundOperator,
     AssiginOperator,
-    Variable,
+    BinaryOperation,
+    CompoundOperator,
     EmptyOperator,
+    Num,
+    UnaryOperation,
+    Variable,
 )
 from interpreter.token import TokenType
 
@@ -59,7 +60,6 @@ class Parser(object):
         """Return the result of a nonterminal term.
 
         Returns:
-
             compound statement : BEGIN statement list END
         """
         self._eat(TokenType.begin)
@@ -68,6 +68,7 @@ class Parser(object):
         root.set_compound_statement(self._statement_list())
 
         self._eat(TokenType.end)
+        return root
 
     def _statement_list(self):
         """Return the result of a nonterminal term.
@@ -173,10 +174,10 @@ class Parser(object):
         """
         token = self.current_token
         if token.type == TokenType.plus:
-            self_eat(TokenType.plus)
+            self._eat(TokenType.plus)
             return UnaryOperation(token, self.factor())
         elif token.type == TokenType.minus:
-            self_eat(TokenType.minus)
+            self._eat(TokenType.minus)
             return UnaryOperation(token, self.factor())
         elif token.type == TokenType.integer:
             self._eat(TokenType.integer)
@@ -186,8 +187,7 @@ class Parser(object):
             node = self.expr()
             self._eat(TokenType.rparen)
             return node
-        else:
-            return self._variable()
+        return self._variable()
 
     def _eat(self, token_type):
         """Compare the current token type with the passed token.
@@ -195,10 +195,6 @@ class Parser(object):
         Args:
             token_type: error message or correct value
         """
-        # compare the current token type with the passed token
-        # type and if they match then "eat" the current token
-        # and assign the next token to the self.current_token,
-        # otherwise raise an exception.
         if self.current_token.type == token_type:
             self.current_token = next(self.lexer)
         else:
