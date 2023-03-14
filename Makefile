@@ -10,6 +10,9 @@ test:  ## Run tests
 lint: ## Run linter
 	@poetry run flake8 interpreter
 
+lint_file:
+	@poetry run flake8 interpreter/$(file)
+
 selfcheck: ## Checks the validity of the pyproject.toml file
 	@poetry check
 
@@ -30,4 +33,4 @@ remove_machine:
 	vagrant halt
 	vagrant destroy
 
-.PHONY: install format test lint selfcheck check build cc-coverage help
+.PHONY: install format test lint selfcheck check build cc-coverage help lint_file
