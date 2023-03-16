@@ -3,7 +3,7 @@
 """Parser's implementation."""
 
 from interpreter.ast import (
-    AssiginOperator,
+    AssignOperator,
     BinaryOperation,
     CompoundOperator,
     EmptyOperator,
@@ -108,7 +108,7 @@ class Parser(object):
         assignment_operator = self.current_token
         self._eat(TokenType.assigin)
         expression = self._expr()
-        return AssiginOperator(variable, assignment_operator, expression)
+        return AssignOperator(variable, assignment_operator, expression)
 
     def _variable(self):
         """Return the result of a nonterminal term.

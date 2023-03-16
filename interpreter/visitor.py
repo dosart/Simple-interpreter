@@ -4,7 +4,7 @@
 
 
 from interpreter.ast import (
-    AssiginOperator,
+    AssignOperator,
     BinaryOperation,
     CompoundOperator,
     EmptyOperator,
@@ -15,7 +15,7 @@ from interpreter.ast import (
 from interpreter.token import TokenType
 
 
-class CalculationVisitir(object):
+class CalculationVisitor(object):
     """Represent a visitor to bypass the AST and visit the result."""
 
     def __init__(self, global_scope):
@@ -41,7 +41,7 @@ class CalculationVisitir(object):
             UnaryOperation: self._visit_unary_operation,
             CompoundOperator: self._visit_compaund_operator,
             EmptyOperator: self._visit_empty_operator,
-            AssiginOperator: self._visit_assigin_operator,
+            AssignOperator: self._visit_assigin_operator,
             Variable: self._visit_variable,
         }
         method = methods.get(type(node), self._error)
@@ -98,7 +98,7 @@ class CalculationVisitir(object):
         Args:
             node: compound operator
         """
-        for statement in node.compaund_statement:
+        for statement in node.compound_statement:
             self.visit(statement)
 
     def _visit_empty_operator(self, node):

@@ -97,18 +97,18 @@ class CompoundOperator(AST):
             self._statement_list.append(statement)
 
     @property
-    def compaund_statement(self):
+    def compound_statement(self):
         return self._statement_list
 
 
-class AssiginOperator(AST):
+class AssignOperator(AST):
     """Implementation of assign operator."""
 
     def __init__(self, variable, op, expr):
         """Construct a new assign operator.
 
         Args:
-            left (Variable): variable node
+            variable (Variable): variable node
             op: operator token
             expr: expression to evaluate (BinaryOperation or UnaryOperation or Num)
         """
@@ -123,10 +123,10 @@ class AssiginOperator(AST):
             str: represent object as a string
 
         """
-        return "AssiginOperator({variable}, {operator},  {expression})".format(
-            variable=self.left,
+        return "AssignOperator({variable}, {operator},  {expression})".format(
+            variable=self.variable,
             operator=self.op,
-            right_child=self.right,
+            right_child=self.expr,
         )
 
 

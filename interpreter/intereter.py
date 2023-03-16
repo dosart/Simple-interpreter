@@ -4,7 +4,7 @@
 
 from interpreter.lexer import get_token
 from interpreter.parser import Parser
-from interpreter.visitor import CalculationVisitir
+from interpreter.visitor import CalculationVisitor
 
 
 def interpret(text):
@@ -18,5 +18,5 @@ def interpret(text):
     """
     parser = Parser(get_token(text))
     ast = parser.parse()
-    visitor = CalculationVisitir()
+    visitor = CalculationVisitor()
     return visitor.visit(ast)
