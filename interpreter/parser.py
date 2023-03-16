@@ -80,7 +80,7 @@ class Parser(object):
         statements = [self._statement()]
 
         while self.current_token.type == TokenType.semi:
-            self.eat(TokenType.semi)
+            self._eat(TokenType.semi)
             statements.append(self._statement())
         return statements
 
@@ -175,16 +175,16 @@ class Parser(object):
         token = self.current_token
         if token.type == TokenType.plus:
             self._eat(TokenType.plus)
-            return UnaryOperation(token, self.factor())
+            return UnaryOperation(token, self._factor())
         elif token.type == TokenType.minus:
             self._eat(TokenType.minus)
-            return UnaryOperation(token, self.factor())
+            return UnaryOperation(token, self._factor())
         elif token.type == TokenType.integer:
             self._eat(TokenType.integer)
             return Num(token)
         elif token.type == TokenType.lparen:
             self._eat(TokenType.lparen)
-            node = self.expr()
+            node = self._expr()
             self._eat(TokenType.rparen)
             return node
         return self._variable()

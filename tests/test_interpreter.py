@@ -2,100 +2,407 @@
 
 # """Interpreter representation tests."""
 
-# import pytest
 
-# from interpreter.intereter import interpret
-# from interpreter.visitor import _GLOBAL_SCOPE
-
-
-# @pytest.mark.parametrize(
-#     "test_input",
-#     ["BEGIN x := 10+11 END.", " BEGIN x:=10 + 11 END. ", " BEGIN x:=10 + 11   END."],
-# )
-# def test_apply_plus_or_minus1(test_input):
-#     """Check a simple expression.
-
-#     Args:
-#         test_input: data for test
-#     """
-
-#     interpret(test_input)
-#     assert _GLOBAL_SCOPE["x"] == 21
+from interpreter.lexer import get_token
+from interpreter.parser import Parser
+from interpreter.visitor import CalculationVisitir
 
 
-# # @pytest.mark.parametrize(
-# #     "test_input",
-# #     ["10+11+11", "10 + 11 + 11 ", " 10 + 11   + 11"],
-# # )
-# # def test_apply_plus_or_minus2(test_input):
-# #     """Check a simple expression.
+def test_apply_plus():
+    """Test a private method.
 
-# #     Args:
-# #         test_input: data for test
-# #     """
-# #     assert interpret(test_input) == 32
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10+11+11"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
 
-
-# # @pytest.mark.parametrize(
-# #     "test_input",
-# #     ["10", "10 ", " 10 "],
-# # )
-# # def test_apply_plus_or_minus3(test_input):
-# #     """Check a simple expression.
-
-# #     Args:
-# #         test_input: data for test
-# #     """
-# #     assert interpret(test_input) == 10
+    assert visitor.visit(ast) == 32
 
 
-# # @pytest.mark.parametrize(
-# #     "test_input",
-# #     ["10-5", "10 - 5 ", " 10 - 5   "],
-# # )
-# # def test_apply_plus_or_minus4(test_input):
-# #     """Check a simple expression.
+def test_apply_single_number():
+    """Test a private method.
 
-# #     Args:
-# #         test_input: data for test
-# #     """
-# #     assert interpret(test_input) == 5
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
 
-
-# # @pytest.mark.parametrize(
-# #     "test_input",
-# #     ["10-5-2", "10 - 5 -2 ", " 10 - 5 - 2  "],
-# # )
-# # def test_apply_plus_or_minus5(test_input):
-# #     """Check a simple expression.
-
-# #     Args:
-# #         test_input: data for test
-# #     """
-# #     assert interpret(test_input) == 3
+    assert visitor.visit(ast) == 10
 
 
-# # @pytest.mark.parametrize(
-# #     "test_input",
-# #     ["10-5+2", "10 - 5 +2 ", " 10 - 5 + 2  "],
-# # )
-# # def test_apply_plus_or_minus6(test_input):
-# #     """Check a simple expression.
+def test_apply_minus1():
+    """Check a simple expression.
 
-# #     Args:
-# #         test_input: data for test
-# #     """
-# #     assert interpret(test_input) == 7
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10-5"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 5
 
 
-# # @pytest.mark.parametrize(
-# #     "test_input",
-# #     ["10-2-5+2", "10 -2 - 5 +2 ", " 10-2 - 5 + 2  "],
-# # )
-# # def test_apply_plus_or_minus7(test_input):
-# #     """Check a simple expression.
+def test_apply_minus2():
+    """Check a simple expression.
 
-# #     Args:
-# #         test_input: data for test
-# #     """
-# #     assert interpret(test_input) == 5
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10-5-2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 3
+
+
+def test_apply_plus_and_minus1():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10-5+2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 7
+
+
+def test_apply_plus_and_minus2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10-2-5+2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 5
+
+
+def test_apply_plus_and_multiplay():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10+2*3"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 16
+
+
+def test_apply_minus_and_multiplay():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10-2*3"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 4
+
+
+def test_apply_multiplay():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("10*2*3"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 60
+
+
+def test_plus_and_multiplay2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("(10+2)*3"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 36
+
+
+def test_minus_and_multiplay2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("(10-2)*3"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 24
+
+
+def test_plus_and_divide():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("2+10/2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 7
+
+
+def test_minus_and_divide():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("2-10/2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == -3
+
+
+def test_minus_and_divide2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("(20-10)/2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 5
+
+
+def test_plus_and_divide2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("(20+10)/2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 15
+
+
+def test_unary():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("-2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == -2
+
+
+def test_unary2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("+2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 2
+
+
+def test_unary3():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("--2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 2
+
+
+def test_unary4():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("-+2"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == -2
+
+
+def test_unary5():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("-(+2)"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == -2
+
+
+def test_unary6():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("-(-2)"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 2
+
+
+def test_plus_and_divide_and_unary():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("(20+10)/(-2)"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == -15
+
+
+def test_plus_and_divide_and_unary2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("(20+10)/(+2)"))
+    ast = parser._expr()
+    visitor = CalculationVisitir(global_scope={})
+
+    assert visitor.visit(ast) == 15
+
+
+def test_assigin_operator():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("a:=2"))
+    ast = parser._assignment_statement()
+
+    global_scope = {}
+    visitor = CalculationVisitir(global_scope)
+    visitor.visit(ast)
+
+    assert global_scope["a"] == 2
+
+
+def test_compaund_operator1():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("BEGIN a:=2 END"))
+    ast = parser._compound_statement()
+
+    global_scope = {}
+    visitor = CalculationVisitir(global_scope)
+    visitor.visit(ast)
+
+    assert global_scope["a"] == 2
+
+
+def test_compaund_operator2():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("BEGIN a:=2; b:=3; END"))
+    ast = parser._compound_statement()
+
+    global_scope = {}
+    visitor = CalculationVisitir(global_scope)
+    visitor.visit(ast)
+
+    assert global_scope["a"] == 2
+    assert global_scope["b"] == 3
+
+
+def test_compaund_operator3():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("BEGIN a:=2; a:=3; END"))
+    ast = parser._compound_statement()
+
+    global_scope = {}
+    visitor = CalculationVisitir(global_scope)
+    visitor.visit(ast)
+
+    assert global_scope["a"] == 3
+    assert len(global_scope) == 1
+
+
+def test_compaund_operator4():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("BEGIN a:=10+15*2; b:=10-100/2; END"))
+    ast = parser._compound_statement()
+
+    global_scope = {}
+    visitor = CalculationVisitir(global_scope)
+    visitor.visit(ast)
+
+    assert global_scope["a"] == 40
+    assert global_scope["b"] == -40
+
+
+def test_compaund_operator5():
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    parser = Parser(get_token("BEGIN a:=10+15*2; b:=10-100/2; c:=10--2 END"))
+    ast = parser._compound_statement()
+
+    global_scope = {}
+    visitor = CalculationVisitir(global_scope)
+    visitor.visit(ast)
+
+    assert global_scope["a"] == 40
+    assert global_scope["b"] == -40
+    assert global_scope["c"] == 12
