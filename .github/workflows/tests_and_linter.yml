@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   vagrant-up:
-    runs-on: macos-10.15
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,4 @@ jobs:
         run:  vagrant up
 
       - name: Ssh into box after boot
-        run:  vagrant ssh
-
-      - name: Run tests and linter
-        run:  make check
+        run:  vagrant ssh -c "make check"
