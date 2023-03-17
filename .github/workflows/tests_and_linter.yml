@@ -24,4 +24,4 @@ jobs:
         run:  vagrant up
 
       - name: Ssh into box after boot
-        run:  vagrant ssh; make check
+        run:  vagrant ssh; make install; make check
