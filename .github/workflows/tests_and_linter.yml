@@ -27,4 +27,4 @@ jobs:
         run:  vagrant ssh
 
       - name: Run tests and linter
-      - run:  make check
+        run:  make check
