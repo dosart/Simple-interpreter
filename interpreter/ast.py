@@ -21,14 +21,23 @@ class Num(AST):
         self.token = token
         self.value = token.value
 
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: Num as a string
+
+        """
+        return "Num({value})".format(value=self.value)
+
     def __repr__(self):
         """Represent object as a string.
 
         Returns:
-            str: represent object as a string
+            str: Num as a string
 
         """
-        return "Num({value})".format(value=self.value)
+        return str(self)
 
 
 class BinaryOperation(AST):
@@ -46,18 +55,27 @@ class BinaryOperation(AST):
         self.op = op
         self.right = right
 
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: BinaryOperation as a string
+
+        """
+        return "BinaryOperation({left_child} {operator} {right_child})".format(
+            operator=self.op.value,
+            left_child=self.left,
+            right_child=self.right,
+        )
+
     def __repr__(self):
         """Represent object as a string.
 
         Returns:
-            str: represent object as a string
+            str: BinaryOperation as a string
 
         """
-        return "BinaryOperation({operator}, {left_child}, {right_child})".format(
-            operator=self.op,
-            left_child=self.left,
-            right_child=self.right,
-        )
+        return str(self)
 
 
 class UnaryOperation(AST):
@@ -73,32 +91,85 @@ class UnaryOperation(AST):
         self.op = op
         self.expr = expr
 
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: UnaryOperation as a string
+
+        """
+        return "UnaryOperation({operator} {expression})".format(
+            operator=self.op.value,
+            expression=self.expr,
+        )
+
     def __repr__(self):
         """Represent object as a string.
 
         Returns:
-            str: represent object as a string
+            str: UnaryOperation as a string
 
         """
-        return "UnaryOperation({operator}, {expression})".format(
-            operator=self.op,
-            expression=self.right,
-        )
+        return str(self)
 
 
 class CompoundOperator(AST):
-    """Represents a 'BEGIN ... END' block"""
+    """Represents a 'BEGIN ... END' block."""
 
     def __init__(self):
+        """Construct a new iterator."""
         self._statement_list = []
 
     def set_compound_statement(self, compound_statement):
+        """Add statement in list.
+
+        Args:
+            compound_statement: list of operators(node that implements the operator ast)
+
+        """
         for statement in compound_statement:
             self._statement_list.append(statement)
 
+    def add_statement(self, statement):
+        """Add statement in list.
+
+        Args:
+            statement: any node that implements the operator ast
+
+        """
+        self._statement_list.append(statement)
+
     @property
     def compound_statement(self):
+        """Return list of statement.
+
+        Returns:
+            list: list of statement
+
+        """
         return self._statement_list
+
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: CompoundOperator as a string
+
+        """
+        return "CompoundOperator(BEGIN {statement_list} END)".format(
+            statement_list=" ".join(
+                str(statement) for statement in self._statement_list
+            ),
+        )
+
+    def __repr__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: CompoundOperator as a string
+
+        """
+        return str(self)
 
 
 class AssignOperator(AST):
@@ -116,18 +187,27 @@ class AssignOperator(AST):
         self.op = op
         self.expr = expr
 
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: AssignOperator as a string
+
+        """
+        return "AssignOperator({variable} {operator} {expression})".format(
+            variable=self.variable,
+            operator=self.op.value,
+            expression=self.expr,
+        )
+
     def __repr__(self):
         """Represent object as a string.
 
         Returns:
-            str: represent object as a string
+            str: AssignOperator as a string
 
         """
-        return "AssignOperator({variable}, {operator},  {expression})".format(
-            variable=self.variable,
-            operator=self.op,
-            right_child=self.expr,
-        )
+        return str(self)
 
 
 class Variable(AST):
@@ -141,6 +221,24 @@ class Variable(AST):
         """
         self.token = token
         self.value = token.value
+
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: Variable as a string
+
+        """
+        return "Variable({variable})".format(variable=self.value)
+
+    def __repr__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: Variable as a string
+
+        """
+        return str(self)
 
 
 class EmptyOperator:

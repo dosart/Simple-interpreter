@@ -79,6 +79,14 @@ def test_make_unary_operation():
     assert expr_node.right.expr.expr.value == 2
 
 
+def test_make_variable():
+    """Check a simple expression."""
+    variable_token = make_variable("a")
+    variable_node = Variable(variable_token)
+
+    assert variable_node.value == "a"
+
+
 def test_str():
     """Check a simple expression."""
     three_token = make_integer("3")
@@ -99,9 +107,9 @@ def test_str():
         variable_node, assign_token, binary_operation_node
     )
 
-    compaund_operator_node = CompoundOperator()
-    compaund_operator_node.add_statement(assign_operator_node)
-    compaund_operator_node.add_statement(unary_operation_node)
+    compound_operator_node = CompoundOperator()
+    compound_operator_node.add_statement(assign_operator_node)
+    compound_operator_node.add_statement(unary_operation_node)
 
     assert str(three_node) == "Num(3)"
     assert str(two_node) == "Num(2)"
@@ -113,6 +121,6 @@ def test_str():
         == "AssignOperator(Variable(a) := BinaryOperation(Num(3) + Num(2)))"
     )
     assert (
-        str(compaund_operator_node)
+        str(compound_operator_node)
         == "CompoundOperator(BEGIN AssignOperator(Variable(a) := BinaryOperation(Num(3) + Num(2))) UnaryOperation(+ Num(3)) END)"
     )
