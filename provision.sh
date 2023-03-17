@@ -42,4 +42,3 @@ echo "Installing project dependencies and activating the virtual environment."
 poetry config virtualenvs.in-project true
 poetry env use python3.8
 poetry install
-poetry shell
