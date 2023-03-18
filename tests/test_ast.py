@@ -13,7 +13,7 @@ from interpreter.ast import (
 from interpreter.token import (
     TokenType,
     make_integer,
-    make_sign,
+    make_reserved_symbol_token,
     make_variable,
     make_reserved_symbol_token,
 )
@@ -30,8 +30,8 @@ def test_make_num():
 
 def test_make_simple_arithmetic_expression():
     """Check a simple expression."""
-    mul_token = make_sign("*")
-    plus_token = make_sign("+")
+    mul_token = make_reserved_symbol_token("*")
+    plus_token = make_reserved_symbol_token("+")
 
     three_node = make_integer("3")
     two_node = make_integer("2")
@@ -60,7 +60,7 @@ def test_make_simple_arithmetic_expression():
 
 def test_make_unary_operation():
     """Check a simple expression."""
-    minus_token = make_sign("-")
+    minus_token = make_reserved_symbol_token("-")
 
     three_node = make_integer("3")
     two_node = make_integer("2")
@@ -91,7 +91,7 @@ def test_str():
     """Check a simple expression."""
     three_token = make_integer("3")
     two_token = make_integer("2")
-    plus_token = make_sign("+")
+    plus_token = make_reserved_symbol_token("+")
     variable_token = make_variable("a")
     assign_token = make_reserved_symbol_token(":=")
 

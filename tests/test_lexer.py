@@ -7,7 +7,7 @@ from interpreter.lexer import get_tokens
 from interpreter.token import (
     make_eof,
     make_integer,
-    make_sign,
+    make_reserved_symbol_token,
     make_variable,
     make_reserved_symbol_token,
 )
@@ -233,7 +233,7 @@ def test_simple_expr1(test_input):
     """
     expected_values = (
         make_integer(1),
-        make_sign("+"),
+        make_reserved_symbol_token("+"),
         make_integer(2),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -253,7 +253,7 @@ def test_simple_expr2(test_input):
     """
     expected_values = (
         make_integer(11),
-        make_sign("+"),
+        make_reserved_symbol_token("+"),
         make_integer(22),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -270,7 +270,7 @@ def test_simple_expr3(test_input):
     """
     expected_values = (
         make_integer(1),
-        make_sign("-"),
+        make_reserved_symbol_token("-"),
         make_integer(2),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -290,7 +290,7 @@ def test_simple_expr4(test_input):
     """
     expected_values = (
         make_integer(11),
-        make_sign("-"),
+        make_reserved_symbol_token("-"),
         make_integer(22),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):

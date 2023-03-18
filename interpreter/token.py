@@ -81,19 +81,6 @@ def make_reserved_symbol_token(reserved_symbol):
     return reserved_symbols.get(reserved_symbol, Token(TokenType.error, "?"))
 
 
-def make_sign(sign):
-    """Return integer token.
-
-    Args:
-        sign: token value
-
-    Returns:
-        token: an sign token
-    """
-    symbols = make_reserved_symbols()
-    return symbols.get(sign, Token(TokenType.error, "?"))
-
-
 def make_integer(token_value):
     """Return integer token.
 
