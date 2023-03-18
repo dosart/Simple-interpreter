@@ -43,7 +43,7 @@ def test_binary_expression_visitor1(test_input):
     """
     arguments, result = test_input
     left, op, right = arguments
-    ast = _make_simple_arthmetic_exprassion(left, op, right)
+    ast = _make_simple_arithmetic_expression(left, op, right)
 
     visitor = CalculationVisitor(global_scope={})
     assert visitor.visit(ast) == result
@@ -60,7 +60,7 @@ def test_binary_expression_visitor2(test_input):
         test_input: data for tests
     """
     first, op1, secod, op2, third, result = test_input
-    left_node = _make_simple_arthmetic_exprassion(first, op1, secod)
+    left_node = _make_simple_arithmetic_expression(first, op1, secod)
     ast = BinaryOperation(
         left=left_node,
         op=make_reserved_symbol_token(op2),
@@ -90,7 +90,7 @@ def test_unary_expression_visitor1(test_input):
 
 def test_assign_operator_visitor():
     """Check a simple expression."""
-    operator = _make_assigin_operator("a:=5")
+    operator = _make_assign_operator("a:=5")
     global_scope = {}
     visitor = CalculationVisitor(global_scope)
     visitor.visit(operator)
@@ -100,7 +100,7 @@ def test_assign_operator_visitor():
 
 def test_compound_operator_visitor1():
     """Check a simple expression."""
-    assign_operator = _make_assigin_operator("a:=5")
+    assign_operator = _make_assign_operator("a:=5")
 
     compound_operator = CompoundOperator()
     compound_operator.set_compound_statement([assign_operator])
@@ -113,11 +113,11 @@ def test_compound_operator_visitor1():
 
 def test_compound_operator_visitor2():
     """Check a simple expression."""
-    assigin_operator1 = _make_assigin_operator("a:=5")
-    assigin_operator2 = _make_assigin_operator("b:=10")
+    assign_operator1 = _make_assign_operator("a:=5")
+    assign_operator2 = _make_assign_operator("b:=10")
 
     compound_operator = CompoundOperator()
-    compound_operator.set_compound_statement([assigin_operator1, assigin_operator2])
+    compound_operator.set_compound_statement([assign_operator1, assign_operator2])
     global_scope = {}
     visitor = CalculationVisitor(global_scope)
     visitor.visit(compound_operator)
@@ -128,8 +128,8 @@ def test_compound_operator_visitor2():
 
 def test_compound_operator_visitor3():
     """Check a simple expression."""
-    assign_operator1 = _make_assigin_operator("a:=5")
-    assign_operator2 = _make_assigin_operator("a:=10")
+    assign_operator1 = _make_assign_operator("a:=5")
+    assign_operator2 = _make_assign_operator("a:=10")
 
     compound_operator = CompoundOperator()
     compound_operator.set_compound_statement([assign_operator1, assign_operator2])
@@ -140,7 +140,7 @@ def test_compound_operator_visitor3():
     assert global_scope["a"] == 10
 
 
-def test_compaund_operator_visitor4():
+def test_compound_operator_visitor4():
     """Check a simple expression."""
     compound_operator = CompoundOperator()
     compound_operator.set_compound_statement([])
@@ -162,7 +162,7 @@ def test_unary_expression_visitor2():
     assert visitor.visit(ast) == 7
 
 
-def _make_simple_arthmetic_exprassion(left, op, right):
+def _make_simple_arithmetic_expression(left, op, right):
     return BinaryOperation(
         Num(make_integer(left)),
         make_reserved_symbol_token(op),
@@ -177,7 +177,7 @@ def _make_unary_expression(op, expr):
     )
 
 
-def _make_assigin_operator(text):
+def _make_assign_operator(text):
     generator = get_token(text)
 
     return AssignOperator(
