@@ -13,7 +13,7 @@ from interpreter.ast import (
     Variable,
 )
 from interpreter.lexer import get_token
-from interpreter.token import make_integer, make_reserved_symbol_token
+from interpreter.token import make_integer, make_keyword_token, make_single_symbol_token
 from interpreter.visitor import CalculationVisitor
 
 
@@ -59,11 +59,11 @@ def test_binary_expression_visitor2(test_input):
     Args:
         test_input: data for tests
     """
-    first, op1, secod, op2, third, result = test_input
-    left_node = _make_simple_arithmetic_expression(first, op1, secod)
+    first, op1, second, op2, third, result = test_input
+    left_node = _make_simple_arithmetic_expression(first, op1, second)
     ast = BinaryOperation(
         left=left_node,
-        op=make_reserved_symbol_token(op2),
+        op=make_single_symbol_token(op2),
         right=Num(make_integer(third)),
     )
 
@@ -155,7 +155,7 @@ def test_unary_expression_visitor2():
     """Check a simple expression."""
     ast = BinaryOperation(
         left=Num(make_integer("5")),
-        op=make_reserved_symbol_token("-"),
+        op=make_single_symbol_token("-"),
         right=_make_unary_expression("-", "2"),
     )
     visitor = CalculationVisitor(global_scope={})
@@ -165,14 +165,14 @@ def test_unary_expression_visitor2():
 def _make_simple_arithmetic_expression(left, op, right):
     return BinaryOperation(
         Num(make_integer(left)),
-        make_reserved_symbol_token(op),
+        make_single_symbol_token(op),
         Num(make_integer(right)),
     )
 
 
 def _make_unary_expression(op, expr):
     return UnaryOperation(
-        op=make_reserved_symbol_token(op),
+        op=make_single_symbol_token(op),
         expr=Num(make_integer(expr)),
     )
 

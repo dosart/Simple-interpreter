@@ -12,8 +12,9 @@ from itertools import takewhile
 from interpreter.token import (
     make_eof,
     make_integer,
-    make_reserved_symbol_token,
-    make_reserved_symbols,
+    make_keywords,
+    make_single_symbol_token,
+    make_single_symbols,
     make_variable,
 )
 
@@ -96,24 +97,32 @@ def get_token(text):
         tokens: token iterator
     """
     iterator = TextIterator(text)
-    symbols = make_reserved_symbols()
+    keywords = make_keywords()
+    symbols = make_single_symbols()
     for char in iterator:
         if char.isspace():
             continue
+        if char == "{":
+            _skip_comment(iterator)
         if char.isalpha():
             word = _parse_word(char, iterator)
             char = iterator.current_item
-            yield symbols.get(word, make_variable(word))
+            yield keywords.get(word, make_variable(word))
         if char.isdigit():
             token = make_integer(_parse_integer(char, iterator))
             char = iterator.current_item
             yield token
         if char == ":" and iterator.next_char == "=":
             next(iterator)
-            yield make_reserved_symbol_token(":=")
+            yield make_single_symbol_token(":=")
         if char in symbols:
             yield symbols[char]
     yield make_eof()
+
+
+def _skip_comment(text):
+    for _ in takewhile(lambda char: char != "}", text):
+        pass
 
 
 def _parse_integer(letter, text):

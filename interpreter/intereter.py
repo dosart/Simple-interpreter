@@ -8,7 +8,7 @@ from interpreter.visitor import CalculationVisitor
 
 
 def interpret(text):
-    """Execute programm.
+    """Execute program.
 
     Args:
         text: program text

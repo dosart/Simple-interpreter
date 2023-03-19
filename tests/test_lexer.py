@@ -7,9 +7,9 @@ from interpreter.lexer import get_tokens
 from interpreter.token import (
     make_eof,
     make_integer,
-    make_reserved_symbol_token,
+    make_single_symbol_token,
     make_variable,
-    make_reserved_symbol_token,
+    make_keyword_token,
 )
 
 
@@ -37,7 +37,7 @@ def test_semi_token(test_input):
     """
     tokens = get_tokens(test_input)
     token = next(tokens)
-    expected = make_reserved_symbol_token(";")
+    expected = make_single_symbol_token(";")
 
     assert expected.type == token.type
     assert expected.value == token.value
@@ -52,7 +52,7 @@ def test_begin_token(test_input):
     """
     tokens = get_tokens(test_input)
     token = next(tokens)
-    expected = make_reserved_symbol_token("BEGIN")
+    expected = make_keyword_token("BEGIN")
 
     assert expected.type == token.type
     assert expected.value == token.value
@@ -67,7 +67,7 @@ def test_end_token(test_input):
     """
     tokens = get_tokens(test_input)
     token = next(tokens)
-    expected = make_reserved_symbol_token("END")
+    expected = make_keyword_token("END")
 
     assert expected.type == token.type
     assert expected.value == token.value
@@ -82,7 +82,7 @@ def test_assign_token(test_input):
     """
     expected_values = (
         make_variable("a"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(5),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -100,11 +100,11 @@ def test_begin_assign_end_tokens1(test_input):
         test_input: data for test
     """
     expected_values = (
-        make_reserved_symbol_token("BEGIN"),
+        make_keyword_token("BEGIN"),
         make_variable("a"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(5),
-        make_reserved_symbol_token("END"),
+        make_keyword_token("END"),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
         assert token.type == expected.type
@@ -126,16 +126,16 @@ def test_begin_assign_end_tokens2(test_input):
         test_input: data for test
     """
     expected_values = (
-        make_reserved_symbol_token("BEGIN"),
+        make_keyword_token("BEGIN"),
         make_variable("a"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(5),
-        make_reserved_symbol_token(";"),
+        make_single_symbol_token(";"),
         make_variable("b"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(11),
-        make_reserved_symbol_token(";"),
-        make_reserved_symbol_token("END"),
+        make_single_symbol_token(";"),
+        make_keyword_token("END"),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
         assert token.type == expected.type
@@ -150,18 +150,18 @@ def test_begin_assign_end_tokens3(test_input):
         test_input: data for test
     """
     expected_values = (
-        make_reserved_symbol_token("BEGIN"),
-        make_reserved_symbol_token("BEGIN"),
+        make_keyword_token("BEGIN"),
+        make_keyword_token("BEGIN"),
         make_variable("a"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(5),
-        make_reserved_symbol_token("END"),
-        make_reserved_symbol_token(";"),
+        make_keyword_token("END"),
+        make_single_symbol_token(";"),
         make_variable("b"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(11),
-        make_reserved_symbol_token(";"),
-        make_reserved_symbol_token("END"),
+        make_single_symbol_token(";"),
+        make_keyword_token("END"),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
         assert token.type == expected.type
@@ -176,9 +176,9 @@ def test_begin_assign_end_tokens4(test_input):
         test_input: data for test
     """
     expected_values = (
-        make_reserved_symbol_token("BEGIN"),
-        make_reserved_symbol_token("END"),
-        make_reserved_symbol_token("."),
+        make_keyword_token("BEGIN"),
+        make_keyword_token("END"),
+        make_single_symbol_token("."),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
         assert token.type == expected.type
@@ -195,14 +195,14 @@ def test_begin_assign_end_tokens5(test_input):
         test_input: data for test
     """
     expected_values = (
-        make_reserved_symbol_token("BEGIN"),
+        make_keyword_token("BEGIN"),
         make_variable("x"),
-        make_reserved_symbol_token(":="),
+        make_single_symbol_token(":="),
         make_integer(5),
-        make_reserved_symbol_token("+"),
+        make_single_symbol_token("+"),
         make_integer(1),
-        make_reserved_symbol_token("END"),
-        make_reserved_symbol_token("."),
+        make_keyword_token("END"),
+        make_single_symbol_token("."),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
         assert token.type == expected.type
@@ -233,7 +233,7 @@ def test_simple_expr1(test_input):
     """
     expected_values = (
         make_integer(1),
-        make_reserved_symbol_token("+"),
+        make_single_symbol_token("+"),
         make_integer(2),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -253,7 +253,7 @@ def test_simple_expr2(test_input):
     """
     expected_values = (
         make_integer(11),
-        make_reserved_symbol_token("+"),
+        make_single_symbol_token("+"),
         make_integer(22),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -270,7 +270,7 @@ def test_simple_expr3(test_input):
     """
     expected_values = (
         make_integer(1),
-        make_reserved_symbol_token("-"),
+        make_single_symbol_token("-"),
         make_integer(2),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
@@ -290,9 +290,43 @@ def test_simple_expr4(test_input):
     """
     expected_values = (
         make_integer(11),
-        make_reserved_symbol_token("-"),
+        make_single_symbol_token("-"),
         make_integer(22),
     )
     for token, expected in zip(get_tokens(test_input), expected_values):
         assert token.type == expected.type
         assert token.value == expected.value
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    [
+        "1-2 {comment}",
+        "{comment} 1 - 2 ",
+        "1 -{comment}2",
+        "{comment}{comment} 1 {comment}-{comment}2{comment}",
+    ],
+)
+def test_skip_comment1(test_input):
+    """Check a simple expression.
+
+    Args:
+        test_input: data for test
+    """
+    expected_values = (
+        make_integer(1),
+        make_single_symbol_token("-"),
+        make_integer(2),
+    )
+    for token, expected in zip(get_tokens(test_input), expected_values):
+        assert token.type == expected.type
+        assert token.value == expected.value
+
+
+def test_skip_comment2():
+    """Check a simple expression."""
+    tokens1 = get_tokens("{comment}")
+    tokens2 = get_tokens("{comment}{comments}")
+
+    assert sum(0 for _ in tokens1) == 0
+    assert sum(0 for _ in tokens2) == 0

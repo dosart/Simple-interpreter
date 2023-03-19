@@ -22,7 +22,13 @@ class TokenType(Enum):
     assigin = (11,)
     begin = (12,)
     end = (13,)
-    variable = 14
+    variable = (14,)
+    program = (15,)
+    var = (16,)
+    integer_type = (17,)
+    real_type = (18,)
+    colon = (19,)
+    comma = (20,)
 
 
 class Token(object):
@@ -47,7 +53,7 @@ class Token(object):
         return "Token: type: {0}, value: {1}".format(self.type, self.value)
 
 
-def make_reserved_symbols():
+def make_single_symbols():
     """Return reserved interpreter symbols.
 
     Returns:
@@ -63,12 +69,40 @@ def make_reserved_symbols():
         ".": Token(TokenType.dot, ","),
         ";": Token(TokenType.semi, ";"),
         ":=": Token(TokenType.assigin, ":="),
-        "BEGIN": Token(TokenType.begin, "BEGIN"),
-        "END": Token(TokenType.end, "END"),
+        ",": Token(TokenType.comma, ","),
     }
 
 
-def make_reserved_symbol_token(reserved_symbol):
+def make_keywords():
+    """Return reserved interpreter symbols.
+
+    Returns:
+        dict: key(str), value(Token)
+    """
+    return {
+        "BEGIN": Token(TokenType.begin, "BEGIN"),
+        "END": Token(TokenType.end, "END"),
+        "PROGRAM": Token(TokenType.program, "PROGRAM"),
+        "VAR": Token(TokenType.program, "VAR"),
+        "INTEGER": Token(TokenType.integer_type, "INTEGER_TYPE"),
+        "REAL": Token(TokenType.real_type, "REAL_TYPE"),
+    }
+
+
+def make_keyword_token(keyword):
+    """Return token for keyword.
+
+    Args:
+        keyword(str): reserved symbol sign
+
+    Returns:
+        token: an reserved symbol token or error token
+    """
+    keywords = make_keywords()
+    return keywords.get(keyword, Token(TokenType.error, "?"))
+
+
+def make_single_symbol_token(reserved_symbol):
     """Return token for reserved symbol.
 
     Args:
@@ -77,8 +111,8 @@ def make_reserved_symbol_token(reserved_symbol):
     Returns:
         token: an reserved symbol token or error token
     """
-    reserved_symbols = make_reserved_symbols()
-    return reserved_symbols.get(reserved_symbol, Token(TokenType.error, "?"))
+    symbols = make_single_symbols()
+    return symbols.get(reserved_symbol, Token(TokenType.error, "?"))
 
 
 def make_integer(token_value):
