@@ -3,7 +3,7 @@
 """Lexer representation tests."""
 
 import pytest
-from interpreter.lexer import get_tokens
+from interpreter.lexer import get_tokens, _parse_number, _parse_word, TextIterator
 from interpreter.token import (
     make_eof,
     make_integer,
@@ -330,3 +330,39 @@ def test_skip_comment2():
 
     assert sum(0 for _ in tokens1) == 0
     assert sum(0 for _ in tokens2) == 0
+
+
+def test_parse_int_number():
+    """Check a simple expression."""
+    assert _run_parse(_parse_number, "0") == 0
+    assert _run_parse(_parse_number, "1") == 1
+    assert _run_parse(_parse_number, "22") == 22
+    assert _run_parse(_parse_number, "100") == 100
+
+
+def test_parse_float_number():
+    """Check a simple expression."""
+    assert _run_parse(_parse_number, "0.1") == 0.1
+    assert _run_parse(_parse_number, "0.15") == 0.15
+    assert _run_parse(_parse_number, "0.155") == 0.155
+
+    assert _run_parse(_parse_number, "1.0") == 1.0
+    assert _run_parse(_parse_number, "22.5") == 22.5
+    assert _run_parse(_parse_number, "100.10") == 100.10
+
+
+def test_parse_word():
+    """Check a simple expression."""
+    assert _run_parse(_parse_word, "hello") == "hello"
+    assert _run_parse(_parse_word, "hEllo") == "hEllo"
+    assert _run_parse(_parse_word, "hello   ") == "hello"
+    assert _run_parse(_parse_word, "hello:") == "hello"
+    assert _run_parse(_parse_word, "hello:=") == "hello"
+
+
+def _run_parse(parse_function, text):
+    first = text[0]
+    new_text = text[1:]
+    iterator = TextIterator(new_text)
+
+    return parse_function(first, iterator)

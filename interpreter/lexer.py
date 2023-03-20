@@ -125,6 +125,18 @@ def _skip_comment(text):
         pass
 
 
+def _parse_number(letter, text):
+    digits = [letter]
+    for digit in takewhile(lambda dig: dig.isdigit(), text):
+        digits.append(digit)
+    if text.current_char == ".":
+        digits.append(text.current_char)
+        for digit in takewhile(lambda dig: dig.isdigit(), text):
+            digits.append(digit)
+        return float("".join(digits))
+    return int("".join(digits))
+
+
 def _parse_integer(letter, text):
     digits = [letter]
     for digit in takewhile(lambda dig: dig.isdigit(), text):
