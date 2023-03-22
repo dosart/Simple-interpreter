@@ -43,6 +43,231 @@ def test_semi_token(test_input):
     assert expected.value == token.value
 
 
+@pytest.mark.parametrize("test_input", ["PROGRAM" " PROGRAM", "PROGRAM  "])
+def test_program_token1(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    token = next(tokens)
+    expected = make_keyword_token("PROGRAM")
+
+    assert expected.type == token.type
+    assert expected.value == token.value
+
+
+@pytest.mark.parametrize("test_input", ["PROGRAM v1;" " PROGRAM v1 ;", "PROGRAM v1 ; "])
+def test_program_token1(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    program_token = next(tokens)
+    variable_token = next(tokens)
+    semi_token = next(tokens)
+
+    expected_program = make_keyword_token("PROGRAM")
+    expected_variable = make_variable("v1")
+    expected_semi = make_single_symbol_token(";")
+
+    assert expected_program.type == program_token.type
+    assert expected_program.value == program_token.value
+
+    assert expected_variable.type == variable_token.type
+    assert expected_variable.value == variable_token.value
+
+    assert expected_semi.type == semi_token.type
+    assert expected_semi.value == semi_token.value
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    [
+        "PROGRAM v1; VAR x:INTEGER",
+        " PROGRAM v1 ; VAR x : INTEGER",
+        "PROGRAM v1 ;\n VAR x : INTEGER",
+    ],
+)
+def test_program_token2(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    program_token = next(tokens)
+    variable_token1 = next(tokens)
+    semi_token = next(tokens)
+    var_token = next(tokens)
+    variable_token2 = next(tokens)
+    colon_token = next(tokens)
+    integer_token = next(tokens)
+
+    expected_program = make_keyword_token("PROGRAM")
+    expected_variable1 = make_variable("v1")
+    expected_semi = make_single_symbol_token(";")
+    expected_var = make_keyword_token("VAR")
+    expected_variable2 = make_variable("x")
+    expected_colon = make_single_symbol_token(":")
+    expected_integer = make_keyword_token("INTEGER")
+
+    assert expected_program.type == program_token.type
+    assert expected_program.value == program_token.value
+
+    assert expected_variable1.type == variable_token1.type
+    assert expected_variable1.value == variable_token1.value
+
+    assert expected_semi.type == semi_token.type
+    assert expected_semi.value == semi_token.value
+
+    assert expected_var.type == var_token.type
+    assert expected_var.value == var_token.value
+
+    assert expected_variable2.type == variable_token2.type
+    assert expected_variable2.value == variable_token2.value
+
+    assert expected_colon.type == colon_token.type
+    assert expected_colon.value == colon_token.value
+
+    assert expected_integer.type == integer_token.type
+    assert expected_integer.value == integer_token.value
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    [
+        "PROGRAM program; VAR x:REAL",
+        " PROGRAM program ; VAR x : REAL",
+        "PROGRAM program ;\n VAR x : REAL",
+    ],
+)
+def test_program_token3(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    program_token = next(tokens)
+    variable_token1 = next(tokens)
+    semi_token = next(tokens)
+    var_token = next(tokens)
+    variable_token2 = next(tokens)
+    colon_token = next(tokens)
+    integer_token = next(tokens)
+
+    expected_program = make_keyword_token("PROGRAM")
+    expected_variable1 = make_variable("program")
+    expected_semi = make_single_symbol_token(";")
+    expected_var = make_keyword_token("VAR")
+    expected_variable2 = make_variable("x")
+    expected_colon = make_single_symbol_token(":")
+    expected_integer = make_keyword_token("REAL")
+
+    assert expected_program.type == program_token.type
+    assert expected_program.value == program_token.value
+
+    assert expected_variable1.type == variable_token1.type
+    assert expected_variable1.value == variable_token1.value
+
+    assert expected_semi.type == semi_token.type
+    assert expected_semi.value == semi_token.value
+
+    assert expected_var.type == var_token.type
+    assert expected_var.value == var_token.value
+
+    assert expected_variable2.type == variable_token2.type
+    assert expected_variable2.value == variable_token2.value
+
+    assert expected_colon.type == colon_token.type
+    assert expected_colon.value == colon_token.value
+
+    assert expected_integer.type == integer_token.type
+    assert expected_integer.value == integer_token.value
+
+
+@pytest.mark.parametrize(
+    "test_input",
+    [
+        "PROGRAM program; VAR x:REAL; y:INTEGER;",
+        " PROGRAM program ; VAR x : REAL; y:INTEGER;",
+        "PROGRAM program ;\n VAR x : REAL; y : INTEGER;",
+    ],
+)
+def test_program_token4(test_input):
+    """Check a string consisting of whitespace does not form tokens.
+
+    Args:
+        test_input: data for test
+    """
+    tokens = get_tokens(test_input)
+    program_token = next(tokens)
+    variable_token1 = next(tokens)
+    semi_token1 = next(tokens)
+    var_token = next(tokens)
+    variable_token2 = next(tokens)
+    colon_token = next(tokens)
+    real_token = next(tokens)
+    semi_token2 = next(tokens)
+    variable_token3 = next(tokens)
+    colon_token2 = next(tokens)
+    integer_token = next(tokens)
+    semi_token3 = next(tokens)
+
+    expected_program = make_keyword_token("PROGRAM")
+    expected_variable1 = make_variable("program")
+    expected_semi1 = make_single_symbol_token(";")
+    expected_var = make_keyword_token("VAR")
+    expected_variable2 = make_variable("x")
+    expected_colon = make_single_symbol_token(":")
+    expected_real = make_keyword_token("REAL")
+    expected_semi2 = make_single_symbol_token(";")
+    expected_variable3 = make_variable("y")
+    expected_colon2 = make_single_symbol_token(":")
+    expected_integer = make_keyword_token("INTEGER")
+    expected_semi3 = make_single_symbol_token(";")
+
+    assert expected_program.type == program_token.type
+    assert expected_program.value == program_token.value
+
+    assert expected_variable1.type == variable_token1.type
+    assert expected_variable1.value == variable_token1.value
+
+    assert expected_semi1.type == semi_token1.type
+    assert expected_semi1.value == semi_token1.value
+
+    assert expected_var.type == var_token.type
+    assert expected_var.value == var_token.value
+
+    assert expected_variable2.type == variable_token2.type
+    assert expected_variable2.value == variable_token2.value
+
+    assert expected_colon.type == colon_token.type
+    assert expected_colon.value == colon_token.value
+
+    assert expected_real.type == real_token.type
+    assert expected_real.value == real_token.value
+
+    assert expected_semi2.type == semi_token2.type
+    assert expected_semi2.value == semi_token2.value
+
+    assert expected_variable3.type == variable_token3.type
+    assert expected_variable3.value == variable_token3.value
+
+    assert expected_colon2.type == colon_token2.type
+    assert expected_colon2.value == colon_token2.value
+
+    assert expected_integer.type == integer_token.type
+    assert expected_integer.value == integer_token.value
+
+    assert expected_semi3.type == semi_token3.type
+    assert expected_semi3.value == semi_token3.value
+
+
 @pytest.mark.parametrize("test_input", ["BEGIN", " BEGIN", "BEGIN  "])
 def test_begin_token(test_input):
     """Check a string consisting of whitespace does not form tokens.
