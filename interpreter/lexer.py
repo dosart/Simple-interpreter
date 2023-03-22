@@ -1,10 +1,6 @@
 # -*- coding:utf-8 -*-
 
-"""Lexer's implementation. Simple lexer for large subset of Pascal language.
-
-Can process simple arithmetic expressions of the type 3 + 5, 3 - 5, 11 + 5, 11 - 5
-Work as a finite state machine. It has two states: a number and a sign.
-"""
+"""Lexer implementation. Simple lexer for large subset of Pascal language."""
 
 
 from itertools import takewhile
@@ -104,6 +100,7 @@ def get_token(text):
             continue
         if char == "{":
             _skip_comment(iterator)
+            continue
         if char.isalpha():
             word = _parse_word(char, iterator)
             char = iterator.current_item
@@ -114,6 +111,7 @@ def get_token(text):
             yield token
         if char == ":" and iterator.next_char == "=":
             next(iterator)
+            char = iterator.current_item
             yield make_single_symbol_token(":=")
         if char in symbols:
             yield symbols[char]
@@ -146,6 +144,6 @@ def _parse_integer(letter, text):
 
 def _parse_word(letter, text):
     word = [letter]
-    for char in takewhile(lambda ch: ch.isalpha(), text):
+    for char in takewhile(lambda ch: ch.isalpha() or ch.isdigit(), text):
         word.append(char)
     return "".join(word)
