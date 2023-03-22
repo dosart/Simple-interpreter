@@ -69,6 +69,7 @@ def make_single_symbols():
         ".": Token(TokenType.dot, ","),
         ";": Token(TokenType.semi, ";"),
         ":=": Token(TokenType.assigin, ":="),
+        ":": Token(TokenType.colon, ":"),
         ",": Token(TokenType.comma, ","),
     }
 
