@@ -40,6 +40,58 @@ class Num(AST):
         return str(self)
 
 
+class Block(AST):
+    """Represents a variable declaration block (VAR x:INTEGER, y,z: REAL)."""
+
+    def __init__(self, declarations):
+        """Construct a variable declaration block.
+
+        Args:
+            declarations: list of variable declaration
+
+        """
+        self._declarations = declarations
+
+    def add_declaration(self, declaration):
+        """Add statement in list.
+
+        Args:
+            declaration: list of variable declaration
+
+        """
+        self._declarations.append(declaration)
+
+    @property
+    def declarations(self):
+        """Return list of variable declaration.
+
+        Returns:
+            list: list of variable declaration
+
+        """
+        return self._declarations
+
+    def __str__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: Block as a string
+
+        """
+        return "Block (VAR {statement_list})".format(
+            statement_list=" ".join(str(statement) for statement in self._declarations),
+        )
+
+    def __repr__(self):
+        """Represent object as a string.
+
+        Returns:
+            str: CompoundOperator as a string
+
+        """
+        return str(self)
+
+
 class BinaryOperation(AST):
     """Implementation of the binary operator."""
 
