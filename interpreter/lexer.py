@@ -144,6 +144,10 @@ def _parse_integer(letter, text):
 
 def _parse_word(letter, text):
     word = [letter]
-    for char in takewhile(lambda ch: ch.isalpha() or ch.isdigit(), text):
+    for char in takewhile(_is_alpha_or_digit, text):
         word.append(char)
     return "".join(word)
+
+
+def _is_alpha_or_digit(char):
+    return char.isalpha() or char.isdigit()
